@@ -66,7 +66,7 @@ class Main extends Component {
         let invaliduser = false;
         if (this.state.repose.length > 0 && this.state.status === 200) {
             res = this.state.repose.map((number) =>
-            <div id="content">
+            <div id="list">
                 <ul>{number.name}</ul>
             </div>
             );

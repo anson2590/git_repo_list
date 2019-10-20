@@ -1,7 +1,7 @@
 #content {
     background-color: #f2f2f2;
     border-radius: 2px;
-    border: 1px solid black;
+    border: 1px solid #ccc8c8;
     padding: 20px;
     width: 25%;
     /* text-align: center; */
@@ -49,6 +49,16 @@ input[type=text], select {
     cursor: pointer;
     margin: 10px;
   }
+
+  #list {
+    background-color: white;
+    border-radius: 2px;
+    border: 1px solid #ccc8c8;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+}
 
   #error {
     color: red;
