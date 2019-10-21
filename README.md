@@ -1,9 +1,9 @@
-### git user repository list
+## Git User Repository List
 
-## Heroku URL: https://git-user-repository-list.herokuapp.com/
+### Heroku URL: https://git-user-repository-list.herokuapp.com/
 
-## About
+### About
 
-# This app is used to get repositories of git a user given.
+#### This app is used to get repositories of git a user given.
 
-# We can filter repositories.
+#### We can filter repositories.
