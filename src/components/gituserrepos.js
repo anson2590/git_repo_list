@@ -4,12 +4,12 @@ import List from './list';
 import {userRepoService} from '../service';
 import '../css/common.css';
 
-class Main extends Component {
+class GitUserRepos extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tmprepose: [],
-            repose: [],
+            allrepose: [], // allrepose stores repositories of user, this state variable wont be modifield
+            repose: [], // repose stores user repositories, this will be modified as user filter happens
             status: 0,
             isClear: false,
             invaliduser: false,
@@ -19,8 +19,9 @@ class Main extends Component {
         this.onClickClear = this.onClickClear.bind(this);
     }
 
+    // To filter repositories based on string entered in search field
     filterResults = query => {
-        let filterresult = this.state.tmprepose
+        let filterresult = this.state.allrepose
         filterresult = filterresult.filter(function(item){
             return item.name.toLowerCase().search(
               query.toLowerCase()) !== -1;
@@ -30,16 +31,17 @@ class Main extends Component {
         })
     }
 
+    // To clear search repositories textbox or user textbox based on clear button triggered
     onClickClear = (eventname) => {
         let clearlist = []
         if(eventname === "user_clear") {
-            clearlist = [];
+            clearlist = []; // to clear user textbox
         } else if(eventname === "filter_clear") {
-            clearlist = this.state.tmprepose;
+            clearlist = this.state.allrepose; // to clear search repositories textbox
         }
 
         this.setState({
-            tmprepose: clearlist,
+            allrepose: clearlist,
             repose: clearlist,
             invaliduser: false,
             isClear: true,
@@ -47,13 +49,14 @@ class Main extends Component {
         })
     }
 
+    // This method does api call to get repositories of particular user entered.
     getUserRepos = (username) => {
-        if(username === "") {
+        if(username === '') {
             this.setState({
                 userfieldemptycheck: true,
                 invaliduser: false,
                 repose: [],
-                tmprepose: [],
+                allrepose: [],
                 status: 200,
                 isClear: false
             })
@@ -63,7 +66,7 @@ class Main extends Component {
                     this.setState({
                         invaliduser: true,
                         repose: response.data,
-                        tmprepose: response.data,
+                        allrepose: response.data,
                         status: response.status,
                         isClear: false,
                         userfieldemptycheck: false,
@@ -71,7 +74,7 @@ class Main extends Component {
                 } else {
                     this.setState({
                         repose: response.data,
-                        tmprepose: response.data,
+                        allrepose: response.data,
                         status: response.status,
                         isClear: false,
                         invaliduser: false,
@@ -101,4 +104,4 @@ class Main extends Component {
     }
 }
 
-export default Main;
+export default GitUserRepos;

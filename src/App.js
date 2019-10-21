@@ -1,10 +1,10 @@
 import React from 'react';
-import Main from './components/main';
+import GitUserRepos from './components/gituserrepos';
 
 function App() {
   return (
     <div className="App">
-      <Main />
+      <GitUserRepos />
     </div>
   );
 }
