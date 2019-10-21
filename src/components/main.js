@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import Input from './input';
+import List from './list';
+import {userRepoService} from '../service';
 import '../css/common.css';
 
 class Main extends Component {
@@ -10,76 +11,91 @@ class Main extends Component {
             tmprepose: [],
             repose: [],
             status: 0,
-            isClear: false
+            isClear: false,
+            invaliduser: false,
+            userfieldemptycheck: false
         }
         this.getUserRepos = this.getUserRepos.bind(this);
         this.onClickClear = this.onClickClear.bind(this);
     }
 
     filterResults = query => {
-        let r = this.state.tmprepose
-
-        r = r.filter(function(item){
+        let filterresult = this.state.tmprepose
+        filterresult = filterresult.filter(function(item){
             return item.name.toLowerCase().search(
               query.toLowerCase()) !== -1;
           });
         this.setState({
-            repose: r
+            repose: filterresult
         })
     }
 
     onClickClear = (eventname) => {
-        let tmp = []
+        let clearlist = []
         if(eventname === "user_clear") {
-            tmp = [];
+            clearlist = [];
         } else if(eventname === "filter_clear") {
-            tmp = this.state.tmprepose;
+            clearlist = this.state.tmprepose;
         }
 
         this.setState({
-            tmprepose: tmp,
-            repose: tmp,
-            isClear: true
+            tmprepose: clearlist,
+            repose: clearlist,
+            invaliduser: false,
+            isClear: true,
+            userfieldemptycheck: false
         })
     }
 
     getUserRepos = (username) => {
-        let axiosConfig = {
-            headers: {
-                'Content-Type': 'application/vnd.github.v3+json',
-            }
-          };
-
-        axios(`https://api.github.com/users/${username}/repos`, axiosConfig)
-            .then(response => {
-                this.setState({
-                    repose: response.data,
-                    tmprepose: response.data,
-                    status: response.status,
-                    isClear: false
-                })
+        if(username === "") {
+            this.setState({
+                userfieldemptycheck: true,
+                invaliduser: false,
+                repose: [],
+                tmprepose: [],
+                status: 200,
+                isClear: false
             })
-    }
+        } else {
+            userRepoService(username).then((response) => {
+                if(response.data.length === 0) {
+                    this.setState({
+                        invaliduser: true,
+                        repose: response.data,
+                        tmprepose: response.data,
+                        status: response.status,
+                        isClear: false,
+                        userfieldemptycheck: false,
+                    })
+                } else {
+                    this.setState({
+                        repose: response.data,
+                        tmprepose: response.data,
+                        status: response.status,
+                        isClear: false,
+                        invaliduser: false,
+                        userfieldemptycheck: false,
+                    })
+                } 
+            })
+        }
+    }            
 
     render() {
-        let res = [];
-        let invaliduser = false;
-        if (this.state.repose.length > 0 && this.state.status === 200) {
-            res = this.state.repose.map((number) =>
-            <div id="list">
-                <ul>{number.name}</ul>
-            </div>
-            );
-        } 
-
-        if (this.state.repose.length === 0 && this.state.status === 200 && this.state.isClear === false) {
-            invaliduser = true
-        }
-
+        const { repose, status, error, invaliduser, userfieldemptycheck } = this.state;
+    
         return(
             <React.Fragment>
-                <Input getUserRepos={this.getUserRepos} filterResults={this.filterResults} error={this.state.error} onClickClear={this.onClickClear} invalidUser={invaliduser} />
-                {res}
+                <Input 
+                    getUserRepos={this.getUserRepos} 
+                    filterResults={this.filterResults} 
+                    error={error} 
+                    onClickClear={this.onClickClear} 
+                    invalidUser={invaliduser} 
+                    userfieldemptycheck={userfieldemptycheck}
+                />
+                <List repose={repose} status={status} />
             </React.Fragment>
         )
     }

@@ -20,6 +20,9 @@ class Input extends Component {
     }
 
     onSubmitGetUsername = () => {
+        this.setState({
+            search: ""
+        })
         this.props.getUserRepos(this.state.username);
     }
 
@@ -48,7 +51,10 @@ class Input extends Component {
     render() {
         let isError;
         if(this.props.invalidUser === true) {
-            isError = <p id="error">Please enter valid git user</p>
+            isError = <p id="error">Entered user is not a git user</p>
+        }
+        if(this.props.userfieldemptycheck === true) {
+            isError = <p id="error">Please enter git user</p>
         }
         return(
             <div id="content">
